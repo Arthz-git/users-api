@@ -8,94 +8,157 @@ const secret = 'adsuasgdhjasgdhjdgahjsg12hj3eg12hj3g12hj3g12hj3g123'
 
 class UserController {
 
-	async index(req, res) {
-		const users = await User.findAll()
+	async getAll(req, res) {
+		try {
+			const users = await User.findAll()
 
-		res.json(users)
+			res.json(users)
+		}
+		catch (err) {
+			res.status(500)
+			res.json({
+				message: 'Erro ao tentar buscar usuários',
+				err: err
+			})
+		}
 	}
 
-	async findUser(req, res) {
-		const id = req.params.id
-		const user = await User.findById(id)
+	async find(req, res) {
+		try {
+			const id = req.params.id
 
-		if (user == undefined) {
-			res.status(404)
-			res.json({})
+			const user = await User.findById(id)
+
+			if (user == undefined) {
+				res.status(404)
+				res.json({
+					message: 'Usuário não encontrado'
+				})
+			}
+			else {
+				res.status(200)
+				res.json(user)
+			}
 		}
-		else {
-			res.status(200)
-			res.json(user)
+		catch (err) {
+			res.status(500)
+			res.json({
+				message: 'Erro ao tentar encontrar usuário',
+				err: err
+			})
 		}
 	}
 
 	async create(req, res) {
-		const {
-			email,
-			fullname,
-			password,
-			age,
-			occupation
-		} = req.body
+		try {
+			const {
+				email,
+				name,
+				password,
+				age,
+				occupation
+			} = req.body
 
-		if (email == undefined) {
-			res.status(400)
-			res.json({ err: 'O e-mail é inválido!' })
+			const emailExists = await User.findEmail(email)
 
-			return
+			if (emailExists) {
+				res.status(406)
+				res.json({
+					message: 'Email já cadastrado'
+				})
+
+				return
+			}
+
+			await User.create(
+				email,
+				name,
+				password,
+				age,
+				occupation
+			)
+
+			res.status(200)
+			res.json({
+				message: 'Usuário cadastrado com sucesso'
+			})
 		}
-
-		const emailExists = await User.findEmail(email)
-
-		if (emailExists) {
-			res.status(406)
-			res.json({ err: 'O e-mail já está cadastrado!' })
-
-			return
+		catch (err) {
+			res.status(500)
+			res.json({
+				message: 'Erro ao tentar criar novo usuário',
+				err: err
+			})
 		}
-
-		await User.newUser(email,
-			fullname,
-			password,
-			age,
-			occupation
-		)
-
-		res.status(200)
-		res.send('Tudo OK!')
 	}
 
 	async edit(req, res) {
-		const { id, name, role, email } = req.body
-		const result = await User.update(id, email, name, role)
+		try {
+			const {
+				id,
+				name,
+				age,
+				occupation
+			} = req.body
 
-		if (result != undefined) {
-			if (result.status) {
+			const user = await User.findById(id)
+
+			if (user) {
+				await User.update(
+					id,
+					name,
+					age,
+					occupation
+				)
+
 				res.status(200)
-				res.send('Tudo OK!')
+				res.json({
+					message: 'Usuário editado com sucesso'
+				})
 			}
 			else {
-				res.status(406)
-				res.send(result.err)
+				res.status(404)
+				res.json({
+					message: 'Usuário informado não existe'
+				})
 			}
 		}
-		else {
-			res.status(406)
-			res.send('Ocorreu um erro no servidor!')
+		catch (err) {
+			res.status(500)
+			res.json({
+				message: 'Erro ao tentar editar usuário',
+				err: err
+			})
 		}
 	}
 
-	async remove(req, res) {
-		const id = req.params.id
+	async delete(req, res) {
+		try {
+			const id = req.params.id
 
-		const result = await User.delete(id)
+			const user = await User.findById(id)
 
-		if (result.status) {
-			res.status(200)
-			res.send('Tudo OK!')
+			if (user) {
+				await User.delete(id)
+
+				res.status(200)
+				res.json({
+					message: 'Usuário deletado'
+				})
+			}
+			else {
+				res.status(404)
+				res.json({
+					message: 'Usuário informado não existe'
+				})
+			}
 		}
-		else {
-			res.status(406)
-			res.send(result.err)
+		catch (err) {
+			res.status(500)
+			res.json({
+				message: 'Erro ao tentar usuário',
+				err: err
+			})
 		}
 	}
 
@@ -131,27 +194,42 @@ class UserController {
 	}
 
 	async login(req, res) {
-		const { email, password } = req.body
+		try {
+			const { email, password } = req.body
 
-		const user = await User.findByEmail(email)
+			const user = await User.findByEmail(email)
 
-		if (user != undefined) {
-			const resultado = await bcrypt.compare(password, user.password)
+			if (user != undefined) {
+				const resultado = await bcrypt.compare(password, user.password)
 
-			if (resultado) {
-				const token = jwt.sign({ email: user.email, role: user.role }, secret)
+				if (resultado) {
+					const token = jwt.sign({ email: user.email, role: user.role }, secret)
 
-				res.status(200)
-				res.json({ token: token })
+					res.status(200)
+					res.json({
+						token: token
+					})
+				}
+				else {
+					res.status(406)
+					res.json({
+						message: 'Senha incorreta'
+					})
+				}
 			}
 			else {
-				res.status(406)
-				res.send('Senha incorreta')
+				res.status(404)
+				res.json({
+					message: 'Usuário não cadastrado'
+				})
 			}
-
 		}
-		else {
-			res.json({ status: false })
+		catch (err) {
+			res.status(500)
+			res.json({
+				message: 'Erro ao tentar buscar usuário',
+				err: err
+			})
 		}
 	}
 

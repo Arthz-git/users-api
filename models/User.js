@@ -10,27 +10,21 @@ class User {
 			const result = await knex.select([
 				'id',
 				'email',
-				'role',
-				'name'
+				'name',
+				'age',
+				'occupation'
 			]).table('users')
 
 			return result
 		}
 		catch (err) {
-			console.log(err)
-
-			return []
+			throw err
 		}
 	}
 
 	async findById(id) {
 		try {
-			const result = await knex.select([
-				'id',
-				'email',
-				'role',
-				'name'
-			]).where({ id: id }).table('users')
+			const result = await knex.select(['*']).where({ id: id }).table('users')
 
 			if (result.length > 0) {
 				return result[0]
@@ -40,21 +34,13 @@ class User {
 			}
 		}
 		catch (err) {
-			console.log(err)
-
-			return undefined
+			throw err
 		}
 	}
 
 	async findByEmail(email) {
 		try {
-			const result = await knex.select([
-				'id',
-				'email',
-				'password',
-				'role',
-				'name'
-			]).where({ email: email }).table('users')
+			const result = await knex.select(['*']).where({ email: email }).table('users')
 
 			if (result.length > 0) {
 				return result[0]
@@ -64,25 +50,25 @@ class User {
 			}
 		}
 		catch (err) {
-			console.log(err)
-
-			return undefined
+			throw err
 		}
 	}
 
-	async newUser(email, password, name) {
+	async create(email, name, password, age = 0, occupation = '') {
 		try {
 			const hash = await bcrypt.hash(password, 10)
 
 			await knex.insert({
-				email,
+				email: email,
 				password: hash,
-				name,
+				name: name,
+				age: age,
+				occupation: occupation,
 				role: 0
 			}).table('users')
 		}
 		catch (err) {
-			console.log(err)
+			throw err
 		}
 	}
 
@@ -104,64 +90,35 @@ class User {
 		}
 	}
 
-	async update(id, email, name, role) {
-		const user = await this.findById(id)
-
-		if (user != undefined) {
+	async update(id, name, age, occupation) {
+		try {
 			const editUser = {}
-
-			if (email != undefined) {
-				if (email != user.email) {
-					const result = await this.findEmail(email)
-					
-					if (result == false) {
-						editUser.email = email
-					}
-					else {
-						return { status: false, err: 'O e-mail já está cadastrado' }
-					}
-				}
-			}
 
 			if (name != undefined) {
 				editUser.name = name
 			}
 
-			if (role != undefined) {
-				editUser.role = role
+			if (age != undefined) {
+				editUser.age = age
 			}
 
-			try {
-				await knex.update(editUser).where({ id: id }).table('users')
-				return { status: true }
+			if (occupation != undefined) {
+				editUser.occupation = occupation
 			}
-			catch (err) {
-				return { status: false, err: err }
-			}
+
+			await knex.update(editUser).where({ id: id }).table('users')
 		}
-		else {
-			return { status: false, err: 'O usuário não existe!' }
+		catch (err) {
+			throw err
 		}
 	}
 
 	async delete(id) {
-		const user = await this.findById(id)
-
-		if (user != undefined) {
-			try {
-				await knex.delete().where({ id: id }).table('users')
-
-				return { status: true }
-			}
-			catch (err) {
-				return { status: false, err: err }
-			}
+		try {
+			await knex.delete().where({ id: id }).table('users')
 		}
-		else {
-			return {
-				status: false,
-				err: 'O usuário não existe, portanto não pode ser deletado.'
-			}
+		catch (err) {
+			throw err
 		}
 	}
 
