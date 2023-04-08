@@ -12,12 +12,31 @@ class UserController {
 		try {
 			const users = await User.findAll()
 
+			res.status(200)
 			res.json(users)
 		}
 		catch (err) {
 			res.status(500)
 			res.json({
 				message: 'Erro ao tentar buscar usuários',
+				err: err
+			})
+		}
+	}
+
+	async getByPage(req, res) {
+		try {
+			const { page, perPage } = req.params
+			
+			const users = await User.getPerPage(page, perPage)
+
+			res.status(200)
+			res.json(users)
+		}
+		catch (err) {
+			res.status(500)
+			res.json({
+				message: 'Erro ao tentar buscar usuários por página',
 				err: err
 			})
 		}

@@ -27,6 +27,14 @@ exports.checkValidation = route => {
 					.optional()
 			]
 
+		case 'getUserPerPage':
+			return [
+				param('page', 'Número da página deve ser maior que 0')
+					.isInt({ min: 1 }),
+				param('perPage', 'Número de itens por página deve ser maior que 0')
+					.isInt({ min: 1 })
+			]
+
 		case 'findUser':
 			return (
 				param('id', 'Código de usuário inválido')
@@ -53,7 +61,7 @@ exports.checkValidation = route => {
 					})
 					.isInt()
 					.withMessage('Idade inválida'),
-					
+
 				body('occupation')
 					.optional({
 						nullable: true

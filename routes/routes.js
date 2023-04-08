@@ -24,10 +24,17 @@ router.post(
 	errorHandler,
 	UserController.create
 )
+
 router.get(
 	'/user',
-	userAuth,
 	UserController.getAll
+)
+
+router.get(
+	'/user/:page/:perPage',
+	checkValidation('getUserPerPage'),
+	errorHandler,
+	UserController.getByPage
 )
 
 router.get(

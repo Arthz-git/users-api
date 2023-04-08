@@ -22,6 +22,28 @@ class User {
 		}
 	}
 
+	async getPerPage(page, perPage) {
+		try {
+			const offset = page - 1
+
+			const result = await knex.select([
+				'id',
+				'email',
+				'name',
+				'age',
+				'occupation'
+			]).table('users')
+			.limit(perPage)
+			.offset(offset * perPage)
+			.orderBy('id')
+
+			return result
+		}
+		catch (err) {
+			throw err
+		}
+	}
+
 	async findById(id) {
 		try {
 			const result = await knex.select(['*']).where({ id: id }).table('users')
