@@ -33,9 +33,9 @@ class User {
 				'age',
 				'occupation'
 			]).table('users')
-			.limit(perPage)
-			.offset(offset * perPage)
-			.orderBy('id')
+				.limit(perPage)
+				.offset(offset * perPage)
+				.orderBy('id')
 
 			return result
 		}
@@ -145,11 +145,16 @@ class User {
 	}
 
 	async changePassword(newPassword, id, token) {
-		const hash = await bcrypt.hash(newPassword, 10)
+		try {
+			const hash = await bcrypt.hash(newPassword, 10)
 
-		await knex.update({ password: hash }).where({ id: id }).table('users')
+			await knex.update({ password: hash }).where({ id: id }).table('users')
 
-		await PasswordToken.setUsed(token)
+			await PasswordToken.setUsed(token)
+		}
+		catch (err) {
+			throw err
+		}
 	}
 }
 

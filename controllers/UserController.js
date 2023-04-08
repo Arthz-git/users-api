@@ -27,7 +27,7 @@ class UserController {
 	async getByPage(req, res) {
 		try {
 			const { page, perPage } = req.params
-			
+
 			const users = await User.getPerPage(page, perPage)
 
 			res.status(200)
@@ -166,7 +166,7 @@ class UserController {
 				})
 			}
 			else {
-				res.status(404)
+				res.status(403)
 				res.json({
 					message: 'Usuário informado não existe'
 				})
@@ -182,33 +182,69 @@ class UserController {
 	}
 
 	async recoverPassword(req, res) {
-		const email = req.body.email
-		const result = await PasswordToken.create(email)
+		try {
+			const { email } = req.body
 
-		if (result.status) {
-			res.status(200)
-			res.send('' + result.token)
+			const user = await User.findByEmail(email)
+
+			if (user) {
+				const result = await PasswordToken.create()
+
+				if (result.status) {
+					res.status(200)
+					res.json({
+						message: 'Credencial gerada com sucesso',
+						data: String(result.token)
+					})
+				}
+				else {
+					res.status(406)
+					res.send(result.err)
+				}
+			}
+			else {
+				res.status(403)
+				res.json({
+					message: 'Usuário informado não existe'
+				})
+			}
 		}
-		else {
-			res.status(406)
-			res.send(result.err)
+		catch (err) {
+			res.status(500)
+			res.json({
+				message: 'Erro ao tentar recuperar a senha',
+				err: err
+			})
 		}
 	}
 
 	async changePassword(req, res) {
-		const token = req.body.token
-		const password = req.body.password
-		const isTokenValid = await PasswordToken.validate(token)
+		try {
+			const { token, password } = req.body
 
-		if (isTokenValid.status) {
-			await User.changePassword(password, isTokenValid.token.user_id, isTokenValid.token.token)
+			const isTokenValid = await PasswordToken.validate(token)
 
-			res.status(200)
-			res.send('Senha alterada')
+			if (isTokenValid.status) {
+				await User.changePassword(password, isTokenValid.token.user_id, isTokenValid.token.token)
+
+				res.status(200)
+				res.json({
+					message: 'Senha alterada com sucesso'
+				})
+			}
+			else {
+				res.status(406)
+				res.json({
+					message: 'Credenciais inválidas'
+				})
+			}
 		}
-		else {
-			res.status(406)
-			res.send('Token inválido!')
+		catch (err) {
+			res.status(500)
+			res.json({
+				message: 'Erro ao tentar alterar a senha',
+				err: err
+			})
 		}
 	}
 
@@ -246,7 +282,7 @@ class UserController {
 		catch (err) {
 			res.status(500)
 			res.json({
-				message: 'Erro ao tentar buscar usuário',
+				message: 'Erro ao tentar fazer login de usuário',
 				err: err
 			})
 		}
