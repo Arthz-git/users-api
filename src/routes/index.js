@@ -18,13 +18,6 @@ router.get(
 	HomeController.index
 )
 
-router.post(
-	'/user',
-	checkValidation('createUser'),
-	errorHandler,
-	UserController.create
-)
-
 router.get(
 	'/user',
 	UserController.getAll
@@ -45,6 +38,13 @@ router.get(
 	UserController.find
 )
 
+router.post(
+	'/user',
+	checkValidation('createUser'),
+	errorHandler,
+	UserController.create
+)
+
 router.put(
 	'/user',
 	userAuth,
@@ -62,18 +62,24 @@ router.delete(
 )
 
 router.post(
+	'/login',
+	checkValidation('login'),
+	errorHandler,
+	UserController.login
+)
+
+router.post(
 	'/recoverpassword',
+	checkValidation('recoverPassword'),
+	errorHandler,
 	UserController.recoverPassword
 )
 
 router.post(
 	'/changepassword',
+	checkValidation('changePassword'),
+	errorHandler,
 	UserController.changePassword
-)
-
-router.post(
-	'/login',
-	UserController.login
 )
 
 module.exports = router

@@ -87,6 +87,27 @@ exports.checkValidation = route => {
 					.withMessage('A senha precisa ter no mínimo 6 caracteres')
 			]
 
+		case 'recoverPassword':
+			return (
+				body('email')
+					.notEmpty()
+					.withMessage('Email é um campo obrigatório')
+					.isEmail()
+					.withMessage('Email inválido')
+			)
+
+		case 'changePassword':
+			return [
+				body('email')
+					.notEmpty()
+					.withMessage('Email é um campo obrigatório')
+					.isEmail()
+					.withMessage('Email inválido'),
+				body('token')
+					.notEmpty()
+					.withMessage('Token é um campo obrigatório')
+			]
+
 		default:
 			return
 	}
