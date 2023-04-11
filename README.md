@@ -92,8 +92,8 @@ creates a new user
 // return
 
 {
-	message: string,
-	err: error?
+  message: string,
+  err: error?
 }
 ```
 
@@ -119,8 +119,8 @@ edits a user
 // return
 
 {
-	message: string,
-	err: error?
+  message: string,
+  err: error?
 }
 ```
 
@@ -137,8 +137,8 @@ deletes a user
 // return
 
 {
-	message: string,
-	err: error?
+  message: string,
+  err: error?
 }
 ```
 
@@ -160,7 +160,7 @@ authenticates a user
 // return
 
 {
-	token: string // encrypted key to be used as bearer token
+  token: string // encrypted key to be used as bearer token
 }
 ```
 
@@ -179,9 +179,9 @@ creates a key to change user's password
 // return
 
 {
-	message: string,
-	token: string, // encrypted key to be used to change the password
-	err: error?
+  message: string,
+  token: string, // encrypted key to be used to change the password
+  err: error?
 }
 ```
 
@@ -193,8 +193,8 @@ creates a key to change user's password
 // body
 
 {
-	token: string,
-	password: string // new password with at least 6 characters
+  token: string,
+  password: string // new password with at least 6 characters
 }
 ```
 
@@ -202,7 +202,7 @@ creates a key to change user's password
 // return
 
 {
-	message: string,
-	err: error?
+  message: string,
+  err: error?
 }
 ```
