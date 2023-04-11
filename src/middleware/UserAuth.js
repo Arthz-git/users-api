@@ -1,13 +1,12 @@
 const jwt = require('jsonwebtoken')
 
-const secret = 'adsuasgdhjasgdhjdgahjsg12hj3eg12hj3g12hj3g12hj3g123'
-
 exports.userAuth = (req, res, next) => {
 	const authToken = req.headers['authorization']
 
 	if (authToken != undefined) {
 		const bearer = authToken.split(' ')
 		const token = bearer[1]
+		const secret = process.env.JWT_SECRET
 
 		try {
 			const decoded = jwt.verify(token, secret)
@@ -30,7 +29,7 @@ exports.userAuth = (req, res, next) => {
 			res.json({
 				status: 500,
 				message: 'Erro ao tentar realizar a autenticação',
-				err: err
+				err: String(err)
 			})
 
 			return

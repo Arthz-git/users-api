@@ -4,8 +4,6 @@ const bcrypt = require('bcrypt')
 const User = require('../models/User')
 const PasswordToken = require('../models/PasswordToken')
 
-const secret = 'adsuasgdhjasgdhjdgahjsg12hj3eg12hj3g12hj3g12hj3g123'
-
 class UserController {
 
 	async getAll(req, res) {
@@ -19,7 +17,7 @@ class UserController {
 			res.status(500)
 			res.json({
 				message: 'Erro ao tentar buscar usuários',
-				err: err
+				err: String(err)
 			})
 		}
 	}
@@ -37,7 +35,7 @@ class UserController {
 			res.status(500)
 			res.json({
 				message: 'Erro ao tentar buscar usuários por página',
-				err: err
+				err: String(err)
 			})
 		}
 	}
@@ -63,7 +61,7 @@ class UserController {
 			res.status(500)
 			res.json({
 				message: 'Erro ao tentar encontrar usuário',
-				err: err
+				err: String(err)
 			})
 		}
 	}
@@ -106,7 +104,7 @@ class UserController {
 			res.status(500)
 			res.json({
 				message: 'Erro ao tentar criar novo usuário',
-				err: err
+				err: String(err)
 			})
 		}
 	}
@@ -146,7 +144,7 @@ class UserController {
 			res.status(500)
 			res.json({
 				message: 'Erro ao tentar editar usuário',
-				err: err
+				err: String(err)
 			})
 		}
 	}
@@ -176,7 +174,7 @@ class UserController {
 			res.status(500)
 			res.json({
 				message: 'Erro ao tentar usuário',
-				err: err
+				err: String(err)
 			})
 		}
 	}
@@ -213,7 +211,7 @@ class UserController {
 			res.status(500)
 			res.json({
 				message: 'Erro ao tentar recuperar a senha',
-				err: err
+				err: String(err)
 			})
 		}
 	}
@@ -243,7 +241,7 @@ class UserController {
 			res.status(500)
 			res.json({
 				message: 'Erro ao tentar alterar a senha',
-				err: err
+				err: String(err)
 			})
 		}
 	}
@@ -253,6 +251,8 @@ class UserController {
 			const { email, password } = req.body
 
 			const user = await User.findByEmail(email)
+
+			const secret = process.env.JWT_SECRET
 
 			if (user != undefined) {
 				const resultado = await bcrypt.compare(password, user.password)
@@ -283,7 +283,7 @@ class UserController {
 			res.status(500)
 			res.json({
 				message: 'Erro ao tentar fazer login de usuário',
-				err: err
+				err: String(err)
 			})
 		}
 	}
