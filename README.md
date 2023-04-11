@@ -2,7 +2,7 @@
 
 A simple REST API to manager users in a database using Node js.
 
-This API has authentication middleware by JWT in almost every route and validation middleware to routes that need parameters from client.
+This API has authentication middleware by JWT in some routes and validation middleware to routes that need parameters from client.
 
 ## Technologies used in this project
 
