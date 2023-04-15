@@ -94,24 +94,6 @@ class User {
 		}
 	}
 
-	async findEmail(email) {
-		try {
-			const result = await knex.select('*').from('users').where({ email: email })
-
-			if (result.length > 0) {
-				return true
-			}
-			else {
-				return false
-			}
-		}
-		catch (err) {
-			console.log(err)
-
-			return false
-		}
-	}
-
 	async update(id, name, age, occupation) {
 		try {
 			const editUser = {}

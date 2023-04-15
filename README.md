@@ -74,7 +74,7 @@ return specific user
 ---
 
 ### **POST** /user
-creates a new user
+it creates a new user
 
 ```
 // body
@@ -100,7 +100,7 @@ creates a new user
 ---
 
 ### **PUT** /user
-edits a user
+it edits a user
 
 **❗ This route required authentication ❗**
 
@@ -127,7 +127,7 @@ edits a user
 ---
 
 ### **DELETE** /user/:id
-deletes a user
+it deletes a user
 
 **❗ This route required authentication ❗**
 
@@ -145,7 +145,7 @@ deletes a user
 ---
 
 ### **POST** /login
-authenticates a user
+it authenticates a user
 
 ```
 // body
@@ -167,7 +167,7 @@ authenticates a user
 ---
 
 ### **POST** /recoverpassword
-creates a key to change user's password
+it creates a key to change user's password
 
 ```
 // body
@@ -188,6 +188,7 @@ creates a key to change user's password
 ---
 
 ### **POST** /changepassword
+it validates token and change user's password
 
 ```
 // body

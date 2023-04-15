@@ -31,6 +31,7 @@ exports.checkValidation = route => {
 			return [
 				param('page', 'Número da página deve ser maior que 0')
 					.isInt({ min: 1 }),
+
 				param('perPage', 'Número de itens por página deve ser maior que 0')
 					.isInt({ min: 1 })
 			]
@@ -103,6 +104,7 @@ exports.checkValidation = route => {
 					.withMessage('Email é um campo obrigatório')
 					.isEmail()
 					.withMessage('Email inválido'),
+					
 				body('token')
 					.notEmpty()
 					.withMessage('Token é um campo obrigatório')

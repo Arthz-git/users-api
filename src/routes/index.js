@@ -4,7 +4,7 @@ const express = require('express')
 const HomeController = require('../controllers/HomeController')
 const UserController = require('../controllers/UserController')
 
-//middlewares
+//middleware
 const { userAuth } = require('../middleware/UserAuth')
 const {
 	checkValidation,

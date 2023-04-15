@@ -1,7 +1,7 @@
 class HomeController {
 
 	async index(req, res) {
-		res.send('')
+		res.send('Servidor está rodando')
 	}
 
 }

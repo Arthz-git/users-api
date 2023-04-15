@@ -76,9 +76,9 @@ class UserController {
 				occupation
 			} = req.body
 
-			const emailExists = await User.findEmail(email)
+			const user = await User.findByEmail(email)
 
-			if (emailExists) {
+			if (user === undefined) {
 				res.status(406)
 				res.json({
 					message: 'Email já cadastrado'
